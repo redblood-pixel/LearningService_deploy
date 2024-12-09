@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  
+  go-backend:
+    build: ./learningservice_backend/
+    command: ./main
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+  
+  db:
+    restart: always
+    build: ./Postgres
+    ports:
+      - 5436:5432
+    environment:
+      - POSTGRES_USER={DB_USER}
+      - POSTGRES_PASSWORD={DB_PASSWORD}
+      - POSTGRES_HOST={DB_HOST}
+      - POSTGRES_PORT={DB_PORT}
+      - POSTGRES_DB={DB_NAME}
