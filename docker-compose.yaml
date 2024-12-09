@@ -7,6 +7,10 @@ services:
     command: ./main
     ports:
       - 8080:8080
+    networks:
+      - app-network
+    expose:
+      - 8080
     depends_on:
       - db
   
@@ -14,10 +18,22 @@ services:
     restart: always
     build: ./Postgres
     ports:
-      - 5436:5432
+      - "5432:5432"
+    networks:
+      - app-network
+    user: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER={DB_USER}
-      - POSTGRES_PASSWORD={DB_PASSWORD}
-      - POSTGRES_HOST={DB_HOST}
-      - POSTGRES_PORT={DB_PORT}
-      - POSTGRES_DB={DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_PORT=${DB_PORT}
+      - POSTGRES_DB=${DB_NAME}
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge
