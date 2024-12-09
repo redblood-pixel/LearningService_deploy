@@ -1,0 +1,6 @@
+[submodule "learningservice_backend"]
+	path = learningservice_backend
+	url = https://github.com/redblood-pixel/learningservice_backend
+[submodule "LearningService_Frontend"]
+	path = LearningService_Frontend
+	url = https://github.com/ttemuchin/LearningService_Frontend
