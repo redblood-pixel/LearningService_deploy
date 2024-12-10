@@ -1,18 +1,34 @@
 version: '3.8'
 
 services:
+
+  frontend:
+    build:
+      context: ./LearningService_Frontend/
+      dockerfile: Dockerfile
+    ports:
+      - 5173:5173
+    networks:
+      - app-network
+    depends_on:
+      go-backend:
+        condition: service_healthy
   
   go-backend:
     build: ./learningservice_backend/
     command: ./main
     ports:
-      - 8080:8080
+      - 8091:8091
     networks:
       - app-network
-    expose:
-      - 8080
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://localhost:8091/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
   
   db:
     restart: always
@@ -30,6 +46,11 @@ services:
       - POSTGRES_HOST=${DB_HOST}
       - POSTGRES_PORT=${DB_PORT}
       - POSTGRES_DB=${DB_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db_data:
