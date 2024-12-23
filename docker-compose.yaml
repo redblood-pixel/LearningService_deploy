@@ -26,9 +26,15 @@ services:
     depends_on:
       go-backend:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://localhost:5173"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
   
   go-backend:
-    build: ./learningservice_backend/
+    build:
+      context: ./learningservice_backend/
     command: ./main
     ports:
       - 8091:8091
