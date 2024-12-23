@@ -2,10 +2,23 @@ version: '3.8'
 
 services:
 
+  nginx:
+    image: nginx:alpine
+    ports:
+      - 80:80
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+    depends_on:
+      go-backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    networks:
+      - app-network
+
   frontend:
     build:
       context: ./LearningService_Frontend/
-      dockerfile: Dockerfile
     ports:
       - 5173:5173
     networks:
